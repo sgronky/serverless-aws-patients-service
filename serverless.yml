@@ -1,0 +1,93 @@
+# serverless.yml
+
+service: patients
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1 # Overwrite the default region used. Default is us-east-1
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  versionFunctions: false # Optional function versioning
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  patientsCreate:
+    handler: handlers/create.create
+    events:
+      - http: 
+          path: patients
+          method: post
+          cors: true
+  patientsDelete:
+    handler: handlers/delete.delete
+    events:
+      - http: 
+          path: patients/{id}
+          method: delete
+          cors: true
+  patientsRetrieve:
+    handler: handlers/retrieve.retrieve
+    events:
+      - http: 
+          path: patients/{id}
+          method: get
+          cors: true
+  patientsUpdate:
+    handler: handlers/update.update
+    events:
+      - http: 
+          path: patients/{id}
+          method: put
+          cors: true
+  patientsSearch:
+    handler: handlers/search.search
+    events:
+      - http: 
+          path: patients
+          method: get
+          cors: true
+  patientsAddCheckup:
+    handler: handlers/checkups.add
+    events:
+      - http: 
+          path: patients/{id}/checkups
+          method: post
+          cors: true
+  patientsDeleteCheckup:
+    handler: handlers/checkups.delete
+    events:
+      - http: 
+          path: patients/{id}/checkups/{date}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
