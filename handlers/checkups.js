@@ -1,10 +1,8 @@
-'use strict';
-
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+import { DynamoDB } from 'aws-sdk';
+const dynamoDb = new DynamoDB.DocumentClient();
 
 //TODO: Manca la validazione degli oggetti inseriti nel DB
-module.exports.add = async (event, context, callback) => {
+export async function add(event, context, callback) {
     const now = Date.now();
     const item = JSON.parse(event.body);
     const params = {
@@ -38,20 +36,19 @@ module.exports.add = async (event, context, callback) => {
 }
 
 //TODO: Manca la validazione degli oggetti inseriti nel DB
-module.exports.delete = async (event, context, callback) => {
+const _delete = async (event, context, callback) => {
     const now = Date.now();
     const item = JSON.parse(event.body);
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
         Key: {
-          id: event.pathParameters.id,
+            id: event.pathParameters.id,
         },
         UpdateExpression: 'REMOVE patient_data.checkups[:idx], updatedAt = :ua',
         ExpressionAttributeValues: {
-          ':idx': item.data,
-          ':ua': now,
+            ':idx': item.data,
+            ':ua': now,
         },
-        
         ReturnValues: 'ALL_NEW',
     };
     try {
@@ -59,9 +56,10 @@ module.exports.delete = async (event, context, callback) => {
         const response = {
             statusCode: 200,
             body: JSON.stringify(result),
-          };
+        };
         callback(null, response);
-    } catch (err) {
+    }
+    catch (err) {
         console.error(err);
         callback(null, {
             statusCode: err.statusCode || 501,
@@ -69,4 +67,5 @@ module.exports.delete = async (event, context, callback) => {
             body: 'Couldn\'t create the patient item.',
         });
     }
-}
+};
+export { _delete as delete };

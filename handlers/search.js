@@ -1,11 +1,8 @@
-'use strict';
-
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const uuid = require('uuid');
+import { DynamoDB } from 'aws-sdk';
+const dynamoDb = new DynamoDB.DocumentClient();
 
 //TODO aggiungere i filtri per la ricerca
-module.exports.search = async (event, context, callback) => {
+export async function search(event, context, callback) {
     const query = event.queryStringParameters.q;
     const params = {
         TableName: process.env.DYNAMODB_TABLE,

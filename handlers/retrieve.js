@@ -1,10 +1,7 @@
-'use strict';
+import { DynamoDB } from 'aws-sdk';
+const dynamoDb = new DynamoDB.DocumentClient();
 
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const uuid = require('uuid');
-
-module.exports.retrieve = async (event, context, callback) => {
+export async function retrieve(event, context, callback) {
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
         Key: {
@@ -16,7 +13,7 @@ module.exports.retrieve = async (event, context, callback) => {
         const response = {
             statusCode: 200,
             body: JSON.stringify(result),
-          };
+        };
         callback(null, response);
     } catch (err) {
         console.error(err);

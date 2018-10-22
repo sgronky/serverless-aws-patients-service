@@ -1,18 +1,16 @@
-'use strict';
-
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const uuid = require('uuid');
+import { DynamoDB } from 'aws-sdk';
+const dynamoDb = new DynamoDB.DocumentClient();
+import { v1 } from 'uuid';
 
 //TODO: Manca la validazione degli oggetti inseriti nel DB
-module.exports.create = async (event, context, callback) => {
+export async function create(event, context, callback) {
     const now = Date.now();
     const data = JSON.parse(event.body);
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
         Item: {
             patient_data: { ...data },
-            id: uuid.v1(),
+            id: v1(),
             createdAt: now,
             updatedAt: now
         }
