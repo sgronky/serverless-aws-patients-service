@@ -1,8 +1,8 @@
-import { DynamoDB } from 'aws-sdk';
-const dynamoDb = new DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 //TODO: Manca la validazione degli oggetti inseriti nel DB
-export async function update(event, context, callback) {
+exports.update = async (event, context, callback) => {
     const now = Date.now();
     const item = JSON.parse(event.body);
     const params = {
@@ -33,4 +33,4 @@ export async function update(event, context, callback) {
             body: 'Couldn\'t create the patient item.',
         });
     }
-}
+};

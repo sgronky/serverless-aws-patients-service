@@ -1,7 +1,7 @@
-import { DynamoDB } from 'aws-sdk';
-const dynamoDb = new DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export async function retrieve(event, context, callback) {
+exports.retrieve = async (event, context, callback) => {
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
         Key: {
@@ -23,4 +23,4 @@ export async function retrieve(event, context, callback) {
             body: 'Couldn\'t delete the patient item.',
         });
     }
-}
+};

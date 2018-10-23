@@ -1,8 +1,8 @@
-import { DynamoDB } from 'aws-sdk';
-const dynamoDb = new DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 //TODO: Manca la validazione degli oggetti inseriti nel DB
-export async function add(event, context, callback) {
+exports.add = async (event, context, callback) => {
     const now = Date.now();
     const item = JSON.parse(event.body);
     const params = {
@@ -33,10 +33,10 @@ export async function add(event, context, callback) {
             body: 'Couldn\'t create the patient item.',
         });
     }
-}
+};
 
 //TODO: Manca la validazione degli oggetti inseriti nel DB
-const _delete = async (event, context, callback) => {
+exports.delete = async (event, context, callback) => {
     const now = Date.now();
     const item = JSON.parse(event.body);
     const params = {
@@ -68,4 +68,3 @@ const _delete = async (event, context, callback) => {
         });
     }
 };
-export { _delete as delete };

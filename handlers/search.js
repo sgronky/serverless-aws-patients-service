@@ -1,8 +1,8 @@
-import { DynamoDB } from 'aws-sdk';
-const dynamoDb = new DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 //TODO aggiungere i filtri per la ricerca
-export async function search(event, context, callback) {
+exports.search = async (event, context, callback) => {
     const query = event.queryStringParameters.q;
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
@@ -26,4 +26,4 @@ export async function search(event, context, callback) {
             body: 'Couldn\'t delete the patient item.',
         });
     }
-}
+};
