@@ -22,6 +22,12 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
+custom:
+  webpackIncludeModules: true
+  webpack:
+    webpackConfig: ./webpack.config.js
+    packager: 'npm'   # Packager that will be used to package your external modules
+
 functions:
   patientsCreate:
     handler: handlers/create.create
@@ -91,3 +97,7 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
