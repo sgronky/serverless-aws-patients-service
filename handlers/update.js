@@ -12,19 +12,19 @@ exports.update = async (event, context, callback) => {
         },
         Item: {
             'patient_data': {
-                'M': item.data
+                'M': item
             },
             'updateAt' : {
                 'N': now
             }
-        },
-        ReturnValues: 'ALL_NEW'
+        }
     };
     try {
         const result = await dynamoDb.put(params).promise();
         const response = {
             statusCode: 200,
-            body: JSON.stringify(result),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(item),
           };
         callback(null, response);
     } catch (err) {
