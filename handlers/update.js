@@ -10,13 +10,15 @@ exports.update = async (event, context, callback) => {
         Key: {
           id: event.pathParameters.id,
         },
-        UpdateExpression: 'SET patient_data = :pd, updatedAt = :ua',
-        ExpressionAttributeValues: {
-          ':pd': item.data,
-          ':ua': now,
+        Item: {
+            'patient_data': {
+                'M': item.data
+            },
+            'updateAt' : {
+                'N': now
+            }
         },
-        
-        ReturnValues: 'ALL_NEW',
+        ReturnValues: 'ALL_NEW'
     };
     try {
         const result = await dynamoDb.put(params).promise();

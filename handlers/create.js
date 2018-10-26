@@ -19,7 +19,8 @@ exports.create = async (event, context, callback) => {
         const result = await dynamoDb.put(params).promise();
         const response = {
             statusCode: 200,
-            body: JSON.stringify(result),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Item),
         };
         callback(null, response);
     } catch (err) {
