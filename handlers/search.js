@@ -3,19 +3,27 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 //TODO aggiungere i filtri per la ricerca
 exports.search = async (event, context, callback) => {
-    const query = event["queryStringParameters"]["q"];
+    const query = event["queryStringParameters"] !== undefined? event["queryStringParameters"]["q"] : null;
     let params = {
-        TableName: process.env.DYNAMODB_TABLE,
-        ExpressionAttributeNames: {
-            "#p": "patient_data",
-            "#n": "name"
-        },
-        ExpressionAttributeValues: {
-            ":q": query
-        },
-        FilterExpression: "contains(#p.#n, :q)"
+        TableName: process.env.DYNAMODB_TABLE
     };
-    console.log("Query param: " + query);
+    
+    if (null != query){
+        params = {
+            ...params,
+            ...{
+                ExpressionAttributeNames: {
+                "#p": "patient_data",
+                "#n": "name"
+                },
+                ExpressionAttributeValues: {
+                    ":q": query
+                },
+                FilterExpression: "contains(#p.#n, :q)"
+            }
+        }
+    }
+
     try {
         const result = await dynamoDb.scan(params).promise();
         const response = {

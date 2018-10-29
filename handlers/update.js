@@ -7,10 +7,11 @@ exports.update = async (event, context, callback) => {
     const item = JSON.parse(event.body);
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
-        Key: {
+/*         Key: {
           id: event.pathParameters.id,
         },
-        Item: {
+ */        Item: {
+            'id': event.pathParameters.id,
             'patient_data': {
                 'M': item
             },
